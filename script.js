@@ -3,11 +3,11 @@ Copyright (c) 2019, cho45 <cho45@lowreal.net>
 All rights reserved.
 Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
     Redistributions of source code must retain the above copyright notice, this list of conditions and the following disclaimer.
-    Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following disclaimer in the 
+    Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following disclaimer in the
     documentation and/or other materials provided with the distribution.
     Neither the name of Great Scott Gadgets nor the names of its contributors may be used to endorse or promote products derived from this software
     without specific prior written permission.
-THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, 
+THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO,
 THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.
 IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
 (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION)
@@ -108,7 +108,7 @@ function versionNumber(str) {
 	const version = str.match(/(\d+)\.(\d+)\.(\d+)/);
 	if (version) {
 		return Array.from(version).slice(1).reduce( (r, i) => r * 10000 + Number(i), 0)
-	} 
+	}
 }
 
 function colorGen(h, s, l, i) {
@@ -139,8 +139,8 @@ function calcPhase(i) {
 
 function calcZ(i) {
 	const z0 = 50;
-	const d = z0 / ((1-i.real)*(1-i.real)+i.imag*i.imag); 
-	const zr = ((1+i.real)*(1-i.real) - i.imag*i.imag) * d;  
+	const d = z0 / ((1-i.real)*(1-i.real)+i.imag*i.imag);
+	const zr = ((1+i.real)*(1-i.real) - i.imag*i.imag) * d;
 	const zi = 2*i.imag * d;
 	return [zr, zi];
 }
@@ -170,7 +170,7 @@ function calcZX(i) {
 }
 
 function calcZr(i) {
-	const d = ((1-i.real)*(1-i.real)+i.imag*i.imag);  
+	const d = ((1-i.real)*(1-i.real)+i.imag*i.imag);
 	const zr = ((1+i.real)*(1-i.real) - i.imag*i.imag) / d;
 	const zi = 2*i.imag / d;
 	return {
@@ -209,7 +209,8 @@ async function downloadFile(url, name) {
 				encoding: undefined,
 			});
 		} catch(e) {
-			console.error('Unable to write file', e);
+			// console.error('Unable to write file', e);
+			this.log.error('Unable to write file', e)
 		}
 	}
 }
@@ -433,7 +434,7 @@ new Vue({
 					console.log(frequencies);
 					this.backend.frequencies = frequencies;
 					*/
-					
+
 					this.update();
 				} else {
 					if (!this.serialMode) {
@@ -683,7 +684,7 @@ new Vue({
 			if (step === 'short') {
 				await this.backend.doCal('short');
 				this.calibrationStep = 'load';
-			} else 
+			} else
 			if (step === 'load') {
 				await this.backend.doCal('load');
 				await this.backend.doCal('isoln');
@@ -885,6 +886,11 @@ new Vue({
 			}
 		},
 
+		log: function (...messages) {
+			console.log(...messages)
+			this.showSnackbar(messages[0]);
+		},
+
 		showSnackbar: function (message) {
 			console.log('showSnackbar', message);
 			this.snackbar.message = message;
@@ -1051,7 +1057,7 @@ new Vue({
 								ticks: {
 									min: 1.0,
 									max: 30.0,
-									callback: (tick) => tick.toString() 
+									callback: (tick) => tick.toString()
 								},
 								scaleLabel: {
 									display: false,
@@ -1408,7 +1414,8 @@ new Vue({
 		this.backend = await new Backend();
 		await this.backend.init(Comlink.proxy({
 			onerror: (e) => {
-				console.log('onerror', e);
+				// console.log('onerror', e);
+				this.log.error(e);
 			},
 			ondisconnected:() => {
 				this.status = 'disconnected';
@@ -1591,4 +1598,3 @@ new Vue({
 		this.$el.style.visibility = 'visible';
 	}
 });
-
